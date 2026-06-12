@@ -41,6 +41,10 @@
             <li><kbd>P</kbd> pausa</li>
           </ul>
         </div>
+
+        <div class="panel-section">
+          <button id="theme-toggle" class="theme-toggle">&#9728; Light</button>
+        </div>
       </aside>
     </div>
 
@@ -54,5 +58,20 @@
   </div>
 
   <script src="game.js"></script>
+  <script>
+    (function () {
+      const btn = document.getElementById('theme-toggle');
+      const saved = localStorage.getItem('tetris-theme') || 'dark';
+      if (saved === 'light') {
+        document.body.classList.add('light');
+        btn.textContent = '☾ Dark';
+      }
+      btn.addEventListener('click', function () {
+        const isLight = document.body.classList.toggle('light');
+        btn.textContent = isLight ? '☾ Dark' : '☀ Light';
+        localStorage.setItem('tetris-theme', isLight ? 'light' : 'dark');
+      });
+    })();
+  </script>
 </body>
 </html>
