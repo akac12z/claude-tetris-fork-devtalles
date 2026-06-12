@@ -46,4 +46,4 @@ jobs:
             - invalid: off-topic, spam, or not actionable
             - wontfix: out of scope for this project
 
-            Only apply labels that exist in the repo. Apply 1–3 labels max. Do not leave a comment.
+            Only apply labels that exist in the repo. Apply 1–3 labels max. Do not leave a comment. If you do leave a comment, use GitHub-compatible Markdown formatting (headings, bullet lists, bold, code blocks, etc.).
