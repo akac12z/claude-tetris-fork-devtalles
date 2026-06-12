@@ -161,3 +161,89 @@ kbd {
 #restart-btn:hover {
   background: #9bbdff;
 }
+
+/* ---- Theme toggle ---- */
+.theme-toggle {
+  width: 100%;
+  background: none;
+  border: 1px solid #2a2a3a;
+  border-radius: 20px;
+  padding: 5px 0;
+  cursor: pointer;
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: #555570;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.theme-toggle:hover {
+  border-color: #7aa2f7;
+  color: #7aa2f7;
+}
+
+/* ---- Light mode ---- */
+body.light {
+  background: #f0f0f8;
+  color: #1a1a2e;
+}
+
+body.light .game-title {
+  color: #3a6dd8;
+  text-shadow: 0 0 16px rgba(58, 109, 216, 0.3);
+}
+
+body.light #board,
+body.light #next-canvas {
+  background: #e8e8f4;
+  border-color: #c0c0d8;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.12);
+}
+
+body.light .label {
+  color: #9090a8;
+}
+
+body.light .value {
+  color: #3a6dd8;
+}
+
+body.light kbd {
+  background: #dde0ef;
+  border-color: #b0b5d0;
+  color: #555570;
+}
+
+body.light .controls li {
+  color: #66667a;
+}
+
+body.light .overlay {
+  background: rgba(220, 220, 235, 0.82);
+}
+
+body.light #overlay-title {
+  color: #c0383a;
+}
+
+body.light #overlay-score {
+  color: #3a6dd8;
+}
+
+body.light #restart-btn {
+  background: #3a6dd8;
+  color: #f0f0f8;
+}
+
+body.light #restart-btn:hover {
+  background: #5585e8;
+}
+
+body.light .theme-toggle {
+  border-color: #c0c0d8;
+  color: #66667a;
+}
+
+body.light .theme-toggle:hover {
+  border-color: #3a6dd8;
+  color: #3a6dd8;
+}
