@@ -13,6 +13,7 @@ body {
   justify-content: center;
   min-height: 100vh;
   user-select: none;
+  transition: background-color 0.25s, color 0.25s;
 }
 
 .wrapper {
@@ -166,19 +167,23 @@ kbd {
 .theme-toggle {
   width: 100%;
   background: none;
-  border: 1px solid #2a2a3a;
-  border-radius: 20px;
-  padding: 5px 0;
+  border: 1px solid #3a3a5a;
+  border-radius: 4px;
+  padding: 8px 0;
   cursor: pointer;
-  font-size: 11px;
-  letter-spacing: 1px;
-  color: #555570;
-  transition: border-color 0.15s, color 0.15s;
+  font-size: 10px;
+  letter-spacing: 2px;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: 600;
+  color: #7aa2f7;
+  text-transform: uppercase;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
 }
 
 .theme-toggle:hover {
   border-color: #7aa2f7;
-  color: #7aa2f7;
+  color: #c8d8ff;
+  background: rgba(122, 162, 247, 0.1);
 }
 
 /* ---- Light mode ---- */
@@ -239,11 +244,12 @@ body.light #restart-btn:hover {
 }
 
 body.light .theme-toggle {
-  border-color: #c0c0d8;
-  color: #66667a;
+  border-color: #b0b5d0;
+  color: #3a6dd8;
 }
 
 body.light .theme-toggle:hover {
   border-color: #3a6dd8;
-  color: #3a6dd8;
+  color: #1a4ab8;
+  background: rgba(58, 109, 216, 0.08);
 }
