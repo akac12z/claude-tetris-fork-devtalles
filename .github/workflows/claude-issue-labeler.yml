@@ -1,0 +1,49 @@
+name: Claude Issue Labeler
+
+on:
+  issues:
+    types: [opened, edited]
+
+jobs:
+  label-issue:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Label issue with Claude
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          claude_args: '--allowed-tools Bash(gh label *),Bash(gh issue edit *)'
+          prompt: |
+            Analyze this GitHub issue and apply the appropriate labels using the GitHub CLI.
+
+            Issue #${{ github.event.issue.number }}
+            Title: ${{ github.event.issue.title }}
+            Body: ${{ github.event.issue.body }}
+
+            Steps:
+            1. Run `gh label list --repo ${{ github.repository }} --json name,description` to see all available labels.
+            2. Based on the issue title and body, select the most appropriate labels from the list.
+            3. Apply them with: `gh issue edit ${{ github.event.issue.number }} --repo ${{ github.repository }} --add-label "<label1>,<label2>"`
+
+            Label selection guidelines:
+            - bug: something is broken or not working as expected
+            - enhancement: new feature or improvement request
+            - documentation: related to docs, README, or comments
+            - question: asking how something works
+            - good first issue: simple, well-scoped, beginner-friendly
+            - help wanted: needs community input or extra attention
+            - duplicate: if the issue appears to repeat an existing one
+            - invalid: off-topic, spam, or not actionable
+            - wontfix: out of scope for this project
+
+            Only apply labels that exist in the repo. Apply 1–3 labels max. Do not leave a comment.
