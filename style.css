@@ -354,3 +354,202 @@ body.light .theme-toggle:hover {
   color: #1a4ab8;
   background: rgba(58, 109, 216, 0.08);
 }
+
+/* ---- Leaderboard (sidebar) ---- */
+#leaderboard-panel {
+  border-top: 1px solid #2a2a3a;
+  padding-top: 14px;
+}
+
+.lb-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.lb-table th {
+  color: #555570;
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-align: left;
+  padding: 2px 4px;
+  border-bottom: 1px solid #2a2a3a;
+}
+
+.lb-table td {
+  padding: 3px 4px;
+  color: #b0b0c8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 60px;
+}
+
+.lb-table tbody tr:nth-child(even) {
+  background: rgba(122, 162, 247, 0.05);
+}
+
+.lb-table tbody tr:hover {
+  background: rgba(122, 162, 247, 0.1);
+}
+
+.lb-highlight td {
+  background: rgba(255, 183, 77, 0.18) !important;
+  border-left: 2px solid #ffb74d;
+  color: #ffd54f;
+}
+
+.lb-empty {
+  font-size: 10px;
+  color: #555570;
+  font-style: italic;
+  padding: 4px 0;
+}
+
+/* ---- Reset Records button ---- */
+.reset-scores-btn {
+  margin-top: 6px;
+  background: none;
+  border: 1px solid #3a2a2a;
+  border-radius: 4px;
+  padding: 5px 0;
+  width: 100%;
+  cursor: pointer;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: 600;
+  color: #885555;
+  text-transform: uppercase;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.reset-scores-btn:hover {
+  border-color: #e57373;
+  color: #e57373;
+  background: rgba(229, 115, 115, 0.08);
+}
+
+/* ---- Overlay leaderboard & name entry ---- */
+.overlay-dynamic {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.lb-qualify-msg {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #ffd54f;
+}
+
+.lb-name-entry {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+#lb-name-input {
+  background: #1a1a25;
+  border: 1px solid #7aa2f7;
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 13px;
+  font-family: 'Courier New', Courier, monospace;
+  color: #e0e0e0;
+  outline: none;
+  width: 130px;
+  transition: border-color 0.15s;
+}
+
+#lb-name-input:focus {
+  border-color: #9bbdff;
+}
+
+#lb-submit-btn {
+  background: #7aa2f7;
+  color: #0f0f17;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+#lb-submit-btn:hover {
+  background: #9bbdff;
+}
+
+.overlay-dynamic .lb-table {
+  font-size: 12px;
+  min-width: 180px;
+}
+
+.overlay-dynamic .lb-table th {
+  color: #888;
+}
+
+.overlay-dynamic .lb-table td {
+  color: #c8c8e0;
+  max-width: 80px;
+}
+
+/* ---- Light mode additions ---- */
+body.light #leaderboard-panel {
+  border-top-color: #c0c0d8;
+}
+
+body.light .lb-table th {
+  color: #9090a8;
+  border-bottom-color: #c0c0d8;
+}
+
+body.light .lb-table td {
+  color: #444460;
+}
+
+body.light .lb-table tbody tr:nth-child(even) {
+  background: rgba(58, 109, 216, 0.05);
+}
+
+body.light .lb-highlight td {
+  background: rgba(255, 152, 0, 0.12) !important;
+  border-left-color: #ff9800;
+  color: #e65100;
+}
+
+body.light .lb-empty {
+  color: #9090a8;
+}
+
+body.light .reset-scores-btn {
+  border-color: #d0b0b0;
+  color: #b05555;
+}
+
+body.light .reset-scores-btn:hover {
+  border-color: #c0383a;
+  color: #c0383a;
+  background: rgba(192, 56, 58, 0.06);
+}
+
+body.light #lb-name-input {
+  background: #e8e8f4;
+  border-color: #3a6dd8;
+  color: #1a1a2e;
+}
+
+body.light #lb-submit-btn {
+  background: #3a6dd8;
+  color: #f0f0f8;
+}
+
+body.light #lb-submit-btn:hover {
+  background: #5585e8;
+}
