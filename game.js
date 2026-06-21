@@ -28,6 +28,20 @@ const PIECES = [
 
 const LINE_SCORES = [0, 100, 300, 500, 800];
 
+const PASTEL_COLORS = [
+  null,
+  '#a8e6cf', // I - mint
+  '#ffd3b6', // O - peach
+  '#d4a5e8', // T - lavender
+  '#b8e4b8', // S - sage
+  '#ffb3ba', // Z - rose
+  '#b3d4f5', // J - sky
+  '#ffe0a3', // L - cream
+];
+
+const SKINS = ['retro', 'neon', 'pastel', 'pixel'];
+let currentSkin = localStorage.getItem('tetris-skin') || 'retro';
+
 const canvas = document.getElementById('board');
 const ctx = canvas.getContext('2d');
 const nextCanvas = document.getElementById('next-canvas');
@@ -39,8 +53,16 @@ const overlay = document.getElementById('overlay');
 const overlayTitle = document.getElementById('overlay-title');
 const overlayScore = document.getElementById('overlay-score');
 const restartBtn = document.getElementById('restart-btn');
+const skinBtn = document.getElementById('skin-btn');
+const pauseMenu = document.getElementById('pause-menu');
+const gameoverPanel = document.getElementById('gameover-panel');
+const resumeBtn = document.getElementById('resume-btn');
+const restartPauseBtn = document.getElementById('restart-pause-btn');
+const startLevelSelect = document.getElementById('start-level-select');
 
 let board, current, next, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId;
+const stored = parseInt(localStorage.getItem('tetris-start-level'), 10);
+let startLevel = (Number.isFinite(stored) && stored >= 1 && stored <= 10) ? stored : 1;
 
 function createBoard() {
   return Array.from({ length: ROWS }, () => new Array(COLS).fill(0));
@@ -106,7 +128,7 @@ function clearLines() {
   if (cleared) {
     lines += cleared;
     score += (LINE_SCORES[cleared] || 0) * level;
-    level = Math.floor(lines / 10) + 1;
+    level = Math.max(startLevel, Math.floor(lines / 10) + 1);
     dropInterval = Math.max(100, 1000 - (level - 1) * 90);
     updateHUD();
   }
@@ -158,13 +180,48 @@ function updateHUD() {
 
 function drawBlock(context, x, y, colorIndex, size, alpha) {
   if (!colorIndex) return;
-  const color = COLORS[colorIndex];
-  context.globalAlpha = alpha ?? 1;
-  context.fillStyle = color;
-  context.fillRect(x * size + 1, y * size + 1, size - 2, size - 2);
-  // highlight
-  context.fillStyle = 'rgba(255,255,255,0.12)';
-  context.fillRect(x * size + 1, y * size + 1, size - 2, 4);
+  const a = alpha ?? 1;
+  context.globalAlpha = a;
+
+  if (currentSkin === 'neon') {
+    const color = COLORS[colorIndex];
+    context.shadowColor = color;
+    context.fillStyle = color;
+    context.fillRect(x * size + 1, y * size + 1, size - 2, size - 2);
+    // inner bright line
+    context.fillStyle = 'rgba(255,255,255,0.35)';
+    context.fillRect(x * size + 1, y * size + 1, size - 2, 3);
+
+  } else if (currentSkin === 'pastel') {
+    const color = PASTEL_COLORS[colorIndex];
+    context.fillStyle = color;
+    context.fillRect(x * size + 1, y * size + 1, size - 2, size - 2);
+    // inset highlight
+    context.fillStyle = 'rgba(255,255,255,0.45)';
+    context.fillRect(x * size + 2, y * size + 2, size - 6, size - 6);
+    context.fillStyle = color;
+    context.fillRect(x * size + 4, y * size + 4, size - 10, size - 10);
+
+  } else if (currentSkin === 'pixel') {
+    const color = COLORS[colorIndex];
+    context.fillStyle = color;
+    context.fillRect(x * size + 1, y * size + 1, size - 2, size - 2);
+    // dot texture
+    const dotSize = Math.max(2, Math.floor(size / 6));
+    context.fillStyle = 'rgba(0,0,0,0.25)';
+    const px = x * size + Math.floor(size / 2) - Math.floor(dotSize / 2);
+    const py = y * size + Math.floor(size / 2) - Math.floor(dotSize / 2);
+    context.fillRect(px, py, dotSize, dotSize);
+
+  } else {
+    // retro (default)
+    const color = COLORS[colorIndex];
+    context.fillStyle = color;
+    context.fillRect(x * size + 1, y * size + 1, size - 2, size - 2);
+    context.fillStyle = 'rgba(255,255,255,0.12)';
+    context.fillRect(x * size + 1, y * size + 1, size - 2, 4);
+  }
+
   context.globalAlpha = 1;
 }
 
@@ -186,8 +243,15 @@ function drawGrid() {
 }
 
 function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  if (currentSkin === 'neon') {
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  } else {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
   drawGrid();
+
+  if (currentSkin === 'neon') { ctx.shadowBlur = 14; }
 
   // board
   for (let r = 0; r < ROWS; r++)
@@ -205,22 +269,39 @@ function draw() {
   for (let r = 0; r < current.shape.length; r++)
     for (let c = 0; c < current.shape[r].length; c++)
       drawBlock(ctx, current.x + c, current.y + r, current.shape[r][c], BLOCK);
+
+  if (currentSkin === 'neon') { ctx.shadowBlur = 0; }
 }
 
 function drawNext() {
-  const NB = 30;
-  nextCtx.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
+  if (currentSkin === 'neon') {
+    nextCtx.fillStyle = '#000';
+    nextCtx.fillRect(0, 0, nextCanvas.width, nextCanvas.height);
+  } else {
+    nextCtx.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
+  }
   const shape = next.shape;
   const offX = Math.floor((4 - shape[0].length) / 2);
   const offY = Math.floor((4 - shape.length) / 2);
+  if (currentSkin === 'neon') { nextCtx.shadowBlur = 14; }
   for (let r = 0; r < shape.length; r++)
     for (let c = 0; c < shape[r].length; c++)
-      drawBlock(nextCtx, offX + c, offY + r, shape[r][c], NB);
+      drawBlock(nextCtx, offX + c, offY + r, shape[r][c], BLOCK);
+  if (currentSkin === 'neon') { nextCtx.shadowBlur = 0; }
+}
+
+function showPauseMenu() {
+  pauseMenu.classList.remove('hidden');
+  gameoverPanel.classList.add('hidden');
+  startLevelSelect.value = String(startLevel);
+  overlay.classList.remove('hidden');
 }
 
 function endGame() {
   gameOver = true;
   cancelAnimationFrame(animId);
+  pauseMenu.classList.add('hidden');
+  gameoverPanel.classList.remove('hidden');
   overlayTitle.textContent = 'GAME OVER';
   overlayScore.textContent = `Puntuación: ${score.toLocaleString()}`;
   overlay.classList.remove('hidden');
@@ -230,13 +311,13 @@ function togglePause() {
   if (gameOver) return;
   paused = !paused;
   if (!paused) {
+    overlay.classList.add('hidden');
+    pauseMenu.classList.add('hidden');
     lastTime = performance.now();
     loop(lastTime);
   } else {
     cancelAnimationFrame(animId);
-    overlayTitle.textContent = 'PAUSA';
-    overlayScore.textContent = '';
-    overlay.classList.remove('hidden');
+    showPauseMenu();
   }
 }
 
@@ -260,22 +341,24 @@ function init() {
   board = createBoard();
   score = 0;
   lines = 0;
-  level = 1;
+  level = startLevel;
   paused = false;
   gameOver = false;
-  dropInterval = 1000;
+  dropInterval = Math.max(100, 1000 - (startLevel - 1) * 90);
   dropAccum = 0;
   lastTime = performance.now();
   next = randomPiece();
   spawn();
   updateHUD();
   overlay.classList.add('hidden');
+  pauseMenu.classList.add('hidden');
+  gameoverPanel.classList.add('hidden');
   cancelAnimationFrame(animId);
   animId = requestAnimationFrame(loop);
 }
 
 document.addEventListener('keydown', e => {
-  if (e.code === 'KeyP') { togglePause(); return; }
+  if (e.code === 'KeyP' || e.code === 'Escape') { e.preventDefault(); togglePause(); return; }
   if (paused || gameOver) return;
   switch (e.code) {
     case 'ArrowLeft':
@@ -300,5 +383,34 @@ document.addEventListener('keydown', e => {
 });
 
 restartBtn.addEventListener('click', init);
+
+resumeBtn.addEventListener('click', togglePause);
+
+restartPauseBtn.addEventListener('click', () => {
+  init();
+});
+
+startLevelSelect.addEventListener('change', () => {
+  startLevel = parseInt(startLevelSelect.value, 10);
+  localStorage.setItem('tetris-start-level', String(startLevel));
+});
+
+// Sync select to persisted startLevel on load
+startLevelSelect.value = String(startLevel);
+
+function updateSkinBtn() {
+  if (skinBtn) skinBtn.textContent = 'Skin: ' + currentSkin.charAt(0).toUpperCase() + currentSkin.slice(1);
+}
+
+if (skinBtn) {
+  skinBtn.addEventListener('click', () => {
+    const idx = SKINS.indexOf(currentSkin);
+    currentSkin = SKINS[(idx + 1) % SKINS.length];
+    localStorage.setItem('tetris-skin', currentSkin);
+    updateSkinBtn();
+  });
+}
+
+updateSkinBtn();
 
 init();
